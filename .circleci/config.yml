@@ -41,6 +41,26 @@ jobs:
           environment:
             my_name: "Elshad"
 
+  save_hello_world_output:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: mkdir -p workspace
+      - run: echo "Hello World Elshad" >workspace/output.txt
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - output.txt
+
+  new_hello:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: workspace
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -52,3 +72,7 @@ workflows:
       - print-myname:
           requires: [print-hello, print-world]
           context: MY_ENV_VAR
+      - save_hello_world_output:
+          requires: [print-hello, print-world, print-myname]
+      - new_hello:
+          requires: ["save_hello_world_output"]
