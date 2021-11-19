@@ -75,10 +75,7 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - run:
-          name: return non-zero
-          command: echo '1'
-
+      - run: exit 1
       - run:
           name: when failed
           command: echo 'previous failed'
