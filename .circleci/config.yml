@@ -71,6 +71,19 @@ jobs:
           name: output_file
           command: cat workspace/output.txt
 
+  check_fail:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      -checkout
+      - run: 
+          name: return non-zero
+          return: 1
+
+      - run:
+          name: when failed
+          command: echo 'previous failed'
+          when: on_fail
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -86,3 +99,5 @@ workflows:
           requires: [print-hello, print-world, print-myname]
       - new_hello:
           requires: ["save_hello_world_output"]
+      - check_fail:
+          requires: [print-hello, print-world, print-myname, save_hello_world_output]
