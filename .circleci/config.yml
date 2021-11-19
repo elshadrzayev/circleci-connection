@@ -71,12 +71,11 @@ jobs:
           name: output_file
           command: cat workspace/output.txt
 
-  check_fail:
+  check_hello:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      -checkout
-      - run: 
+      - run:
           name: return non-zero
           return: 1
 
@@ -98,6 +97,6 @@ workflows:
       - save_hello_world_output:
           requires: [print-hello, print-world, print-myname]
       - new_hello:
-          requires: ["save_hello_world_output"]
-      - check_fail:
-          requires: [print-hello, print-world, print-myname, save_hello_world_output]
+          requires: [save_hello_world_output]
+      - check_hello:
+          requires: [new_hello]
